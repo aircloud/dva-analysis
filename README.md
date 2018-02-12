@@ -4,7 +4,7 @@
 
 本文章用于个人学习研究，并不代表 dva 团队的任何观点。
 
-原文以及包含一定注释的代码见[这里]()，若有问题也可以在[这里]()进行讨论
+原文以及包含一定注释的代码见[这里](https://github.com/aircloud/dva-analysis)，若有问题也可以在[这里](https://github.com/aircloud/dva-analysis/issues)进行讨论
 
 ### 起步
 
@@ -233,7 +233,7 @@ Plugin 插件管理类(实际上我认为称其为钩子函数管理类比较合
 这里的第二步比较简洁：我们知道实际上这里就是使用了`plugin.use`方法挂载了一个插件
 
 ```javascript
-app.use(createLoading());
+app.use(createLoading()); // 需要注意，插件挂载需要在 app.start 之前
 ```
 
 createLoading 这个插件实际上是官方提供的 Loading 插件，通过这个插件我们可以非常方便地进行 Loading 的管理，无需进行手动管理，我们可以先[看一篇文章](https://www.jianshu.com/p/61fe7a57fad4)来简单了解一下。
@@ -351,13 +351,13 @@ function injectModel(createReducer, onError, unlisteners, m) {
   }
 ```
 
-我们首先分析第一个 if 中的内容：首先通过getReducer函数将转换好的 reducers 挂载(或替换)到 store.asyncReducers[m.namespace] 中，然后通过 redux 本身提供的能力 replaceReducer 完成 reducer 的替换。
+**我们首先分析第一个 if 中的内容**：首先通过getReducer函数将转换好的 reducers 挂载(或替换)到 store.asyncReducers[m.namespace] 中，然后通过 redux 本身提供的能力 replaceReducer 完成 reducer 的替换。
 
 这里我们需要注意 getReducer 函数，实际上，dva 里面 reducers 写法和我们之前直接使用 redux 的写法略有不同：
 
 我们这里的 reducers，实际上要和 action 中的 actionType 同名的 reducer，所以这里我们没有必要去写 switch case 了，对于某一个 reducer 来说其行为应该是确定的，这给 reducers 的写法带来了一定的简化，当然，我们可以使用 extraReducers 定义我们之前习惯的那种比较复杂的 reducers。
 
-接下来我们分析第二个 if 中的内容：第二个函数首先获取到了我们定义的 effects 并通过 _getSaga 进行处理，然后使用 `runSaga`(实际上就是createSagaMiddleware().run，来自于redux-saga) 进行执行。
+**接下来我们分析第二个 if 中的内容**：第二个函数首先获取到了我们定义的 effects 并通过 _getSaga 进行处理，然后使用 `runSaga`(实际上就是createSagaMiddleware().run，来自于redux-saga) 进行执行。
 
 实际上，这里的 `_getSaga` 函数比较复杂，我们接下来重点介绍这个函数。
 
@@ -497,7 +497,7 @@ function applyOnEffect(fns, effect, model, key) {
 
 3.最后，根据我们定义的type(默认是`takeEvery`，也就是都执行)，来选择不同的 saga，takeLatest 即为只是执行最近的一个，throttle则起到节流的效果，一定时间内仅仅允许被触发一次，这些都是 redux-saga 的内部实现，dva 也是基本直接引用，因此在这里不进行展开。
 
-最后我们分析`injectModel`第三个`if`中的内容，处理`subscriptions`:
+**最后我们分析`injectModel`第三个`if`中的内容**:处理`subscriptions`:
 
 ```javascript
 if (m.subscriptions) {
@@ -714,6 +714,7 @@ dva-core中的源码文件目录以及其功能:
 
 * 动态 model，已经封装好了整套调用，动态添加/删除 model 变得非常简单
 * 默认封装好了管理 effects 的方式，有限可选可配置，降低学习成本的同时代码更利于维护
+* 易于上手，集成redux、redux-saga、react-router等常用功能
 
 
 ### dva不好的地方
@@ -724,7 +725,7 @@ dva-core中的源码文件目录以及其功能:
 * 很多 issues 不知道为什么就被关闭了，作者在最后也并未给出合理的解释
 * dva2 之后有点将 effects 和 actions 混淆，这一点我也并不是非常认同，当然原作者可能有自己的考虑，这里不过多评议。
 
-总之，作为一个个人主力的项目(主要开发者贡献了99%以上的代码)，可以看出作者的功底深厚，经验丰富，但是由于这样一个体系化的东西牵扯内容较多，并且非常受制于react、redux、react-router、redux-saga等的版本影响，不建议具备一定规模的非阿里系团队在生产环境中使用，但是如果是快速成型的中小型项目或者个人应用，使用起来还是有很大帮助的。
+总之，作为一个个人主力的项目(主要开发者贡献了99%以上的代码)，可以看出作者的功底深厚，经验丰富，但是由于这样一个体系化的东西牵扯内容较多，并且非常受制于react、redux、react-router、redux-saga等的版本影响，**不建议具备一定规模的非阿里系团队在生产环境中使用**，但是如果是快速成型的中小型项目或者个人应用，使用起来还是有很大帮助的。
 
 ### TODOS
 
