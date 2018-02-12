@@ -696,7 +696,7 @@ dva-core中的源码文件目录以及其功能:
 
 * checkModel 对我们定义的 Model 进行检查是否符合要求
 * constants 非常简单的常量文件，目前只定义了一个常量：NAMESPACE_SEP(/)
-* cratePromiseMiddleware
+* cratePromiseMiddleware 笔者自己定义的 redux 插件
 * createStore 封装了 redux 原生的 createStore
 * getReducer 这里面的函数其实主要就是调用了 handleActions 文件导出的函数
 * getSaga 将用户输入的 effects 部分的键值对函数进行管理
@@ -706,7 +706,7 @@ dva-core中的源码文件目录以及其功能:
 * perfixedDispatch 该文件提供了对 Dispatch 增加前缀的工具性函数 prefixedDispatch
 * prefixNamespace 该文件提供了对 reducer 和 effects 增加前缀的工具性函数 prefixNamespace
 * prefixType 判断是 reducer 还是 effects
-* subscriptions 该文件提供了运行 subscriptions 和调用用户返回的 ubsub 函数以及删除缓存的功能
+* subscriptions 该文件提供了运行 subscriptions 和调用用户返回的 unlisten 函数以及删除缓存的功能
 * utils 提供一些非常基础的工具函数
 
 
@@ -717,12 +717,12 @@ dva-core中的源码文件目录以及其功能:
 * 易于上手，集成redux、redux-saga、react-router等常用功能
 
 
-### dva不好的地方
+### 劣势总结
 
 * 版本区隔不明显，dva 有 1.x 和 2.x 两种版本，之间API有些差异，但是官网提供的一些样例等中没有说明基于的版本，并且有的还是基于旧版本的，会给新手带来很多疑惑。
 * 内容繁杂，但是却没有一个整合性质的官方网站，大都是通过 list 的形式列下来写在README的。
-* 目前比如动态加载等还存在着一些问题，和直接采用react配套工具写的效果有所区别
-* 很多 issues 不知道为什么就被关闭了，作者在最后也并未给出合理的解释
+* 目前比如动态加载等还存在着一些问题，和直接采用react配套工具写的效果有所区别。
+* 很多 issues 不知道为什么就被关闭了，作者在最后也并未给出合理的解释。
 * dva2 之后有点将 effects 和 actions 混淆，这一点我也并不是非常认同，当然原作者可能有自己的考虑，这里不过多评议。
 
 总之，作为一个个人主力的项目(主要开发者贡献了99%以上的代码)，可以看出作者的功底深厚，经验丰富，但是由于这样一个体系化的东西牵扯内容较多，并且非常受制于react、redux、react-router、redux-saga等的版本影响，**不建议具备一定规模的非阿里系团队在生产环境中使用**，但是如果是快速成型的中小型项目或者个人应用，使用起来还是有很大帮助的。
